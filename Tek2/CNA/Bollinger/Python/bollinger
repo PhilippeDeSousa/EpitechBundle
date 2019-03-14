@@ -1,0 +1,77 @@
+#!/usr/bin/env python3.6 
+import sys;
+import os.path;
+from decimal import *
+from statistics import *
+import args
+
+class Bollinger:
+        def __init__(self, period, coef, filename, index):
+                self.Period = int(period);
+                self.Coef = float(coef);
+                self.Filename = filename;
+                self.Index = int(index) + 1;
+                self.MovingAverage = 0;
+                self.StandardDeviation = 0;
+                self.BandMin = 0;
+                self.BandMax = 0;
+                self.FloatFile = [];
+
+def PrintInput(Boll) :
+        print("INPUT");
+        print("Index: " + str(Boll.Index - 1));
+        print("Period: " + str(Boll.Period));
+        print("SD_coef:", "%.2f" % float(Boll.Coef));
+        print();
+
+def SetBollingerFile(Boll):
+        if os.path.isfile(Boll.Filename) == False:
+            sys.exit(84);
+        else :
+            with open(Boll.Filename, "r") as file:
+                filestr = file.read();
+            File = filestr.split("\n");
+            if (Boll.Index > len(File) or Boll.Period > len(File) or len(filestr) == 0):
+                sys.exit(84)
+            Boll.FileLength = len(File)
+            if File[len(File) - 1] == "" :
+                File.remove(File[len(File) - 1])
+            del File[: Boll.Index - Boll.Period]
+            del File[-(Boll.FileLength - Boll.Index - 1) : ]
+            Boll.FloatFile = [float(x) for x in File]
+            file.close();
+
+def SetMovingAverage(Boll): 
+        Boll.MovingAverage = sum(Boll.FloatFile)/len(Boll.FloatFile)
+
+def SetStandardDeviation(Boll) :
+        Boll.StandardDeviation = sum([(x-Boll.MovingAverage)**2 for x in Boll.FloatFile]) / len(Boll.FloatFile)
+        Boll.StandardDeviation = Boll.StandardDeviation**0.5
+
+def SetBands(Boll) :
+        Boll.BandMin = Boll.MovingAverage - (Boll.StandardDeviation * Boll.Coef);
+        Boll.BandMax = Boll.MovingAverage + (Boll.StandardDeviation * Boll.Coef);
+
+def PrintOutput(Boll):
+        print("OUTPUT");
+        print("MA:", "%.2f" % float(Boll.MovingAverage));
+        print("SD:", "%.2f" % float(Boll.StandardDeviation));
+        print("B+:", "%.2f" % float(Boll.BandMax));
+        print("B-:", "%.2f" % float(Boll.BandMin));
+
+def CheckBoll(Boll):
+        if (Boll.Period < 1 or Boll.Coef < 1 or Boll.Index < 1 or Boll.Index - Boll.Period < 0):
+            sys.exit(84)
+
+
+args.CheckArgs();
+Boll = Bollinger(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]);
+SetBollingerFile(Boll);
+CheckBoll(Boll);
+SetMovingAverage(Boll);
+SetStandardDeviation(Boll);
+SetBands(Boll);
+PrintInput(Boll);
+PrintOutput(Boll);
+
+sys.exit(0);

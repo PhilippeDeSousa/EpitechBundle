@@ -1,0 +1,154 @@
+#!/usr/bin/env python3.6
+import sys
+import time
+import os
+from numpy import *
+from matplotlib.pyplot import *
+import Graph
+
+def WriteAndFlush(Str) :
+	sys.stdout.write(Str);
+	sys.stdout.flush();
+
+class DataClass :
+	def __init__ (self) :
+		self.File = [];
+		self.Crypto = [];
+		self.Raw = [];
+		self.Stock = [];
+		self.Forex = [];
+		self.Clock = 0.5;
+		self.MA = [];
+		self.TabHighCrypto = [];
+		self.TabLowCrypto = [];
+		self.TabHighRaw = [];
+		self.TabLowRaw = [];
+		self.TabHighStock = [];
+		self.TabLowStock = [];
+		self.TabHighForex = [];
+		self.TabLowForex = [];
+		self.SD = [];
+		self.High = [];
+		self.Low = [];
+		self.Period = 20;
+
+	class MovingAverage :
+		def __init__ (self, crypto, raw, stock, forex, Period) :
+			self.Crypto = sum(crypto[-Period:])/len(crypto[-Period:]);
+			self.Raw = sum(raw[-Period:])/len(raw[-Period:]);
+			self.Stock = sum(stock[-Period:])/len(stock[-Period:])
+			self.Forex = sum(forex[-Period:])/len(forex[-Period:])
+
+	class StandardDeviation :
+		def __init__ (self, Data, MA, Period) :
+			self.Crypto = (sum([(x - MA.Crypto)**2 for x in Data.Crypto[-Period:]]) / len(Data.Crypto[-Period:]))**0.5;
+			self.Raw = (sum([(x - MA.Raw)**2 for x in Data.Raw[-Period:]]) / len(Data.Raw[-Period:]))**0.5;
+			self.Stock = (sum([(x - MA.Stock)**2 for x in Data.Stock[-Period:]]) / len(Data.Stock[-Period:]))**0.5;
+			self.Forex = (sum([(x -MA.Forex)**2 for x in Data.Forex[-Period:]]) / len(Data.Forex[-Period:]))**0.5;
+
+	class HigherBand :
+		def __init__ (self, MA, SD, Coeff) :
+			self.Crypto = MA.Crypto + (SD.Crypto * Coeff);
+			self.Raw = MA.Raw + (SD.Raw * Coeff);
+			self.Stock = MA.Stock + (SD.Stock * Coeff);
+			self.Forex = MA.Forex + (SD.Forex * Coeff);
+
+	class LowerBand :
+		def __init__ (self, MA, SD, Coeff) :
+			self.Crypto = MA.Crypto - (SD.Crypto * Coeff);
+			self.Raw = MA.Raw - (SD.Raw * Coeff);
+			self.Stock = MA.Stock - (SD.Stock * Coeff);
+			self.Forex = MA.Forex - (SD.Forex * Coeff);
+
+	def GetEntry(self) :
+		path = "../push_index/.index.db"
+		try :
+			os.mkfifo(path)
+		except OSError :
+			pass
+		my_value = -1
+		fifo = open(path, "r")
+		Filestr = "";
+		for line in fifo :
+			Filestr += line;
+		fifo.close();
+		self.File = Filestr.split("\n");
+		for line in self.File :
+			if "crypto" in line :
+				self.Crypto.append(float(line.split(':', 1)[-1]));
+			if "raw" in line :
+				self.Raw.append(float(line.split(':', 1)[-1]));
+			if "stock" in line :
+				self.Stock.append(float(line.split(':', 1)[-1]));
+			if "forex" in line :
+				self.Forex.append(float(line.split(':', 1)[-1]));
+
+	def GetSample(self) :
+		for i in range(0, 20) :
+			self.GetEntry();
+			MA = self.MovingAverage(Data.Crypto, Data.Raw, Data.Stock, Data.Forex, Data.Period);
+			SD = self.StandardDeviation(Data, MA, Data.Period);
+			High = self.HigherBand(MA, SD, 1.25);
+			Low = self.LowerBand(MA, SD, 1.25);
+			self.TabHighCrypto.append(High.Crypto);
+			self.TabLowCrypto.append(Low.Crypto);
+			self.TabHighRaw.append(High.Raw);
+			self.TabLowRaw.append(Low.Raw);
+			self.TabHighStock.append(High.Stock);
+			self.TabLowStock.append(Low.Stock);
+			self.TabHighForex.append(High.Forex);
+			self.TabLowForex.append(Low.Forex);
+			time.sleep(self.Clock);
+
+	def BuyAndSell(self) :
+		for i in range(0, 310) :
+			self.GetEntry();
+			MA = self.MovingAverage(Data.Crypto, Data.Raw, Data.Stock, Data.Forex, Data.Period);
+			SD = self.StandardDeviation(Data, MA, Data.Period);
+			High = self.HigherBand(MA, SD, 1.25);
+			Low = self.LowerBand(MA, SD, 1.25);
+			self.TabHighCrypto.append(High.Crypto);
+			self.TabLowCrypto.append(Low.Crypto);
+			self.TabHighRaw.append(High.Raw);
+			self.TabLowRaw.append(Low.Raw);
+			self.TabHighStock.append(High.Stock);
+			self.TabLowStock.append(Low.Stock);
+			self.TabHighForex.append(High.Forex);
+			self.TabLowForex.append(Low.Forex);
+			if self.Crypto[-1] < Low.Crypto :
+				WriteAndFlush("BUY:1:crypto\n");
+			if self.Raw[-1] < Low.Raw :
+				WriteAndFlush("BUY:1:raw_material\n");
+			if self.Stock[-1] < Low.Stock :
+				WriteAndFlush("BUY:1:stock_exchange\n");
+			if self.Forex[-1] < Low.Forex :
+				WriteAndFlush("BUY:10:forex\n");
+			if self.Crypto[-1] > High.Crypto :
+				WriteAndFlush("SELL:1:crypto\n");
+			if self.Raw[-1] > High.Raw :
+				WriteAndFlush("SELL:1:raw_material\n");
+			if self.Stock[-1] > High.Stock :
+				WriteAndFlush("SELL:1:stock_exchange\n");
+			if self.Forex[-1] > High.Forex :
+				WriteAndFlush("SELL:10:forex\n");
+			time.sleep(self.Clock);
+			if i % 10 == 0 :
+				WriteAndFlush("STATS\n");
+
+	def SellEverything(self) :
+		for i in range(0, 50) :
+			WriteAndFlush("SELL:1:crypto\n");
+			WriteAndFlush("SELL:1:raw_material\n");
+			WriteAndFlush("SELL:1:stock_exchange\n");
+			WriteAndFlush("SELL:10:forex\n");
+
+Data = DataClass();
+
+Data.GetSample();
+Data.BuyAndSell();
+
+
+Data.SellEverything();
+WriteAndFlush("EXIT\n");
+Graph.GraphGen(Data);
+sys.exit();
