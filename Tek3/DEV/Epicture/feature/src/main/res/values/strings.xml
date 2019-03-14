@@ -1,0 +1,4 @@
+<resources>
+    <!-- Strings related to login -->
+    <string name="action_sign_in_imgur">Sign in with Imgur</string>
+</resources>

@@ -1,0 +1,46 @@
+<% if(user.services.research == true){ %>
+    <% if(!user.widgets.yt){ %>
+        <form action="./youtube" method="post">
+            <div class="widget">
+                <div id="widget-text">
+                    <h2>Youtube Widget</h2>
+                    <p><br>Select a channel</p>
+                    <input id="channel" name="channel" type="text"
+                                placeholder="Enter channel">
+                    <select id="refresh" name="refresh" required>
+                            <option>5 minutes</option>
+                            <option>10 minutes</option>
+                            <option>30 minutes</option>
+                            <option>1 hour</option>
+                            <option>3 hours</option>
+                        </select>
+                    <input type="submit" class="first-button" value="Add channel" />
+                </div>
+            </div>
+        </form>
+    <% } else { %>
+        <div class="widget">
+            <form action="./youtube" method="post">
+                <button class="btn"><i class="fa fa-close"></i></button>
+            </form>
+            <form action="./youtube" method="post">
+                <div id="widget-text">
+                    <% if(user.widgets.youtube.channel){ %>
+                        <h2><%= user.widgets.youtube.channel %></h2>
+                        <img id="widget-img" src=<%= user.widgets.youtube.thumbnail %>>
+                        <span id="youtube-chan"><%= user.widgets.youtube.subs %></span>
+                        <p>Want to see another channel ?</p>
+                    <% }%>
+                    <% if(!user.widgets.youtube.channel){ %>
+                        <span id="widget-spec">No City Selected</span>
+                        <p><br>Select a channel</p>
+                    <% }%>
+                    <input id="channel" name="channel" type="text"
+                        placeholder="Enter channel">
+                    <input type="submit" class="first-button" value="Get Channel!" />
+                </div>
+            </form>
+        </div>
+    <% } %>
+<% }%>
+

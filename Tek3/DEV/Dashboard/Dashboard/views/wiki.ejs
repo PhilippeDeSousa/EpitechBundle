@@ -1,0 +1,43 @@
+<% if(user.services.research == true){ %>
+	<% if(!user.widgets.wiki){ %>
+		<form action="./wiki" method="post">
+			<div class="widget">
+				<div id="widget-text">
+					<h2>Wikipedia Widget</h2>
+					<p>Enter your research</p>
+					<input id="search" name="search" type="text" placeholder="Enter search">
+					<select id="refresh" name="refresh" required>
+						<option>5 minutes</option>
+						<option>10 minutes</option>
+						<option>30 minutes</option>
+						<option>1 hour</option>
+						<option>3 hours</option>
+					</select>
+					<input type="submit" class="first-button" value="Search!" />
+				</div>
+			</div>
+		</form>
+	<% } else { %>
+		<div class="widget">
+			<form action="./wiki" method="post">
+				<button class="btn"><i class="fa fa-close"></i></button>
+			</form>
+			<form action="./wiki" method="post">
+				<div id="widget-text">
+					<% if (user.wiki && user.wiki.search && !user.wiki.name) { %>
+						Search: <%= user.wiki.search %>
+						<br> Sorry but we Found Nothing
+					<% } else if (user.wiki && user.wiki.name) { %>
+						<h2><%= user.wiki.name %></h2>
+						<%= user.wiki.shortText %>
+						<br>
+						<br> See more at:
+						<a href="<%= user.wiki.url %>"> <%= user.wiki.url %> </a>
+					<% } %>
+					<input id="search" name="search" type="text" placeholder="Enter search">
+					<input type="submit" class="first-button" value="Search!" />
+				</div>
+			</form>
+		</div>
+	<% } %>
+<% } %>

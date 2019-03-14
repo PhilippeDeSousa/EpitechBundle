@@ -1,0 +1,2 @@
+set COMPOSE_CONVERT_WINDOWS_PATHS=1 && docker-compose --file "./DockerLiveEdit/docker-compose.yml" build && start /b cmd /c docker-compose --file "./DockerLiveEdit/docker-compose.yml" up
+(nodemon -v || npm install -g nodemon) && cd ./Dashboard && npm update && nodemon app.js

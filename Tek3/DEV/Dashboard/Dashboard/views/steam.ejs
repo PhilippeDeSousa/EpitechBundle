@@ -1,0 +1,45 @@
+<% if(user.services.research) { %>
+	<% if(!user.widgets.steam){ %>
+		<form action="./steam" method="post">
+			<div class="widget">
+				<div id="widget-text">
+					<h2>Steam Widget</h2>
+					<p>Check a game price</p>
+					<input id="search" name="search" type="text" placeholder="Enter game or appID">
+					<select id="refresh" name="refresh" required>
+						<option>5 minutes</option>
+						<option>10 minutes</option>
+						<option>30 minutes</option>
+						<option>1 hour</option>
+						<option>3 hours</option>
+					</select>
+					<input type="submit" class="first-button" value="Search!" />
+				</div>
+			</div>
+		</form>
+	<% } else { %>
+		<div class="widget">
+			<form action="./steam" method="post">
+				<button class="btn"><i class="fa fa-close"></i></button>
+			</form>
+			<form action="./steam" method="post">
+				<div id="widget-text">
+					<% if (!user.steam) { %>
+						<h2>Steam Widget</h2>
+						<p>Check a game price</p>
+					<% } else if (user.steam && user.steam.search && !user.steam.success) { %>
+						Search: <%= user.steam.search %>
+						<br> There is no such game.
+					<% } else if (user.steam && user.steam.success) { %>
+						<h2><%= user.steam.name %></h2>
+						<%= user.steam.shortDesc %>
+						<br> <img src = "<%= user.steam.picture %>" />
+						<br> <%= user.steam.price %> <%= user.steam.currency %>
+					<% } %>
+					<input id="search" name="search" type="text" placeholder="Enter game or app ID">
+					<input type="submit" class="first-button" value="Search!" />
+				</div>
+			</form>
+		</div>
+	<% } %>
+<% } %>

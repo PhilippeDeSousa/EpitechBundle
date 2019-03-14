@@ -1,0 +1,47 @@
+<% if(user.services.meteo == true){ %>
+    <% if(!user.widgets.meteo){ %>
+        <form action="./meteo" method="post">
+            <div class="widget">
+                <div id="widget-text">
+                    <h2>Meteo Widget</h2>
+                    <p><br>Select a city to get the weather from</p>
+                    <input id="city" name="city" type="text"
+                                placeholder="Enter city">
+                    <select id="refresh" name="refresh" required>
+                            <option>5 minutes</option>
+                            <option>10 minutes</option>
+                            <option>30 minutes</option>
+                            <option>1 hour</option>
+                            <option>3 hours</option>
+                        </select>
+                    <input type="submit" class="first-button" value="Add meteo widget" />
+                </div>
+            </div>
+        </form>
+    <% } else { %>
+        <div class="widget">
+            <form action="./meteo" method="post">
+                <button class="btn"><i class="fa fa-close"></i></button>
+            </form>
+            <form action="./meteo" method="post">
+                <div id="widget-text">
+                    <% if(user.temp){ %>
+                        <h2><%= user.city %></h2>
+                        <img id="widget-img" src=<%= "http://openweathermap.org/img/w/" + user.weather.icon + ".png" %>>
+                        <span id="widget-spec"><%= user.temp %>°C</span>
+                        <p>Want to see the weather in another city ?</p>
+                    <% }%>
+                    <% if(!user.temp){ %>
+                        <img id="widget-img" src="meteo-image.png">
+                        <span id="meteo-temp">No City Selected</span>
+                        <p><br>Select a city to get the weather from</p>
+                    <% }%>
+                    <input id="city" name="city" type="text"
+                        placeholder="Enter city">
+                    <input type="submit" class="first-button" value="Get Weather!" />
+                </div>
+            </form>
+        </div>
+    <% } %>
+<% }%>
+
