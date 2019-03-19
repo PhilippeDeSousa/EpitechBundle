@@ -5,6 +5,7 @@ This repository contains most of my projects made during my first three years at
 ## Tek1
 ```
     CPE/BSQ
+    CPE/GetNextLine
     CPE/Matchstick
     CPE/Need4Stek
     CPE/Pushswap

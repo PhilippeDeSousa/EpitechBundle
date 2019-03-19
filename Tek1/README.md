@@ -6,6 +6,7 @@ This folder contains most of my Tek1 projects.
 ### Language: C
 ```
     BSQ
+    GetNextLine
     Matchstick
     Need4Stek
     Pushswap
