@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  server:
+    image: "node"
+    volumes:
+      - ./API:/usr/src/app
+    ports:
+      - "8080:8080"
+    command: bash -c "cd /usr/src/app && npm install && node app.js"
+
+  mobile_user:
+    image: "javiersantos/android-ci:latest"
+    volumes:
+      - ./Mobile:/usr/src/android
+      # The .apk will be moved here
+      - apk:/apk
+    # Build and move the .apk to the shared volume apk
+    command: bash -c "cd /usr/src/android && ./gradlew assembleRelease && ls -lR app/build/outputs/apk && mv app/build/outputs/apk/release/app-release-unsigned.apk /apk"
+
+  client_web:
+    image: "node"
+    ports: 
+      - "8081:5000"
+    volumes:
+      - ./App:/usr/src/app
+      # You can find the .apk here
+      # The apk name should be: app-release-unsigned.apk
+      - apk:/apk
+    links:
+      - server:api
+    command: bash -c "while [ ! -f apk/app-release-unsigned.apk ]; do echo 'waiting for APK' && sleep 5; done && cp /apk/app-release-unsigned.apk /usr/src/app/public/client.apk && cd /usr/src/app && npm install && npm install -g serve && npm run build && serve -s build"
+    depends_on:
+      - server
+      - mobile_user
+
+volumes:
+  pgdata: {}
+  apk: {}

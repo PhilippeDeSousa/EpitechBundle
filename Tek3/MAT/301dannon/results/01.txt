@@ -1,0 +1,6 @@
+4 elements
+select sort: 6 comparisons
+insertion sort: 4 comparisons
+bubble sort: 6 comparisons
+fusion sort: 5 comparisons
+quicksort: 4 comparisons

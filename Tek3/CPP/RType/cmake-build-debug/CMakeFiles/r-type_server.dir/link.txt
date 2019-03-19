@@ -1,1 +1,0 @@
-/usr/bin/c++  -g  -rdynamic CMakeFiles/r-type_server.dir/Empty/Main.cpp.o  -o bin/r-type_server 

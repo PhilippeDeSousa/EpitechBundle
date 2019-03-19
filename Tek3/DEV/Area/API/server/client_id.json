@@ -1,0 +1,10 @@
+{
+    "web": {
+        "client_id":"113342332437-e1on63vbnolcc8m65asak7mp3b2sl7oe.apps.googleusercontent.com",
+        "project_id":"rising-analogy-230716",
+        "auth_uri":"https://accounts.google.com/o/oauth2/auth",
+        "token_uri":"https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret":"jx_IjxuArJti1wbwGH2uOA_O"
+    }
+}
