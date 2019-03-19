@@ -1,0 +1,26 @@
+version: "3"
+services:
+  # This is the Website
+  node_app:
+    build: .
+    ports:
+    # Access it at localhost:8080
+    - "8080:8080"
+    depends_on:
+    - mongo
+  # Database
+  mongo:
+    image: mongo
+    ports:
+    - "27017"
+    environment:
+      MONGO_INITDB_DATABASE: dashboard
+  # This is a Dashboard GUI for Docker
+  portainer:
+    image: portainer/portainer
+    ports:
+    # Access it at localhost:9000
+      - "9000:9000"
+    command: -H unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
