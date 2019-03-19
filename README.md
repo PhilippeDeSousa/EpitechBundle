@@ -3,6 +3,7 @@
 This repository contains most of my projects made during my first three years at Epitech paris.
 
 ## Tek1
+```
     CPE/BSQ
     CPE/Matchstick
     CPE/Need4Stek
@@ -13,8 +14,10 @@ This repository contains most of my projects made during my first three years at
 
     PSU/42sh
     PSU/Navy
+```
 
 ## Tek2
+```
     ASM/MinilibC
     CNA/Bollinger
     CNA/Trade
@@ -24,8 +27,10 @@ This repository contains most of my projects made during my first three years at
     PSU/MyFTP
     PSU/Philosophers
     PSU/Zappy
+```
 
 ## Tek3
+```
     CPP/Babel
     CPP/RType
     CPP/Zia
@@ -38,3 +43,4 @@ This repository contains most of my projects made during my first three years at
     MAT/302separation
     MAT/304pacman
     MAT/305construction
+```
