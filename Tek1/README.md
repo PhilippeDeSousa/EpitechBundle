@@ -10,7 +10,6 @@ This folder contains most of my Tek1 projects.
     Matchstick
     Need4Stek
     Pushswap
-    Sokoban
 ```
 
 ## Mathematics
@@ -24,4 +23,5 @@ This folder contains most of my Tek1 projects.
 ```
     42sh
     Navy
+    Sokoban
 ```
