@@ -7,6 +7,7 @@ This folder contains most of my Tek1 projects.
 ```
     BSQ
     GetNextLine
+    Lemin
     Matchstick
     Need4Stek
     Pushswap

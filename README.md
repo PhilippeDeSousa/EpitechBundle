@@ -6,15 +6,16 @@ This repository contains most of my projects made during my first three years at
 ```
     CPE/BSQ
     CPE/GetNextLine
+    CPE/Lemin
     CPE/Matchstick
     CPE/Need4Stek
     CPE/Pushswap
-    CPE/Sokoban
 
     MAT/101pong
 
     PSU/42sh
     PSU/Navy
+    PSU/Sokoban
 ```
 
 ## Tek2
