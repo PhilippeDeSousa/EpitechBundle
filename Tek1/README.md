@@ -23,6 +23,7 @@ This folder contains most of my Tek1 projects.
 ### Language: C
 ```
     42sh
+    Minishell1
     Navy
     Sokoban
 ```
