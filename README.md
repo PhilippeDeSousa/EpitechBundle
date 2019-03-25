@@ -15,6 +15,7 @@ This repository contains most of my projects made during my first three years at
 
     PSU/42sh
     PSU/Navy
+    PSU/Minishell1
     PSU/Sokoban
 ```
 
