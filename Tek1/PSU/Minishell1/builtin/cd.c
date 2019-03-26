@@ -16,7 +16,7 @@ static int change_directory(char ***env, const char *dir, const char *current) {
     char *oldpwd;
 
     if (chdir(dir) == -1) {
-        return (-1);
+        return (1);
     }
     tmp = getcwd(NULL, 0);
     pwd = my_strcat("PWD ", tmp);
@@ -48,7 +48,7 @@ int my_cd(char ***env, const char *dir) {
             my_puterr(2, "cd", HOMEDIR_ERR);
     } else {
         new_dir = form_directory(current, dir);
-        if ((ret_val = change_directory(env, new_dir, current)) == -1) {
+        if ((ret_val = change_directory(env, new_dir, current))) {
             if (is_directory(new_dir) != 0) {
                 my_puterr(2, dir, NOT_DIR);
             } else

@@ -5,18 +5,16 @@
 #include "sys/types.h"
 #include "sys/stat.h"
 
-static int check_rights(char **paths, const char *command) {
+static int check_rights(const char *command) {
     struct stat st;
     DIR *dir;
 
     if ((dir = opendir(command))) {
         my_puterr(2, command, PERM_DENIED);
-        free_array(paths);
         free(dir);
         return 1;
     } else if (!(stat(command, &st) == 0 && st.st_mode & S_IXUSR)) {
         my_puterr(2, command, PERM_DENIED);
-        free_array(paths);
         return 1;
     }
     return 0;
@@ -26,8 +24,6 @@ int exec_everywhere(char **env, char **av, const char *command) {
     char **paths = get_all_paths(env);
     char *full_command;
 
-    if (check_rights(paths, command))
-        return (-2);
     if (paths == NULL)
         return (-1);
     if (execve(command, av, env) != - 1) {
@@ -74,8 +70,8 @@ static int exec(char **env, const char *command) {
     int ex_val = 0;
 
     args = str_to_array(command, ' ');
-    if ((ex_val = exec_everywhere(env, args, args[0])) < 0) {
-        if (ex_val == -1)
+    if ((ex_val = exec_everywhere(env, args, args[0])) == -1) {
+        if (!check_rights(command))
             my_puterr(2, command, (errno == ENOEXEC) ? BIN_ERROR : CMD_NOT_FOUND);
         free_array(args);
         exit(1);

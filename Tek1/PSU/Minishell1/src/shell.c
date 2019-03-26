@@ -33,16 +33,31 @@ static int interpretor(char ***env, char *buffer) {
     else if (find(buffer, "unsetenv ") == 0)
         my_unsetenv(env, cut_string(buffer, "unsetenv "));
     else if (find(buffer, "cd") == 0)
-        my_cd(env, cut_string(buffer, "cd"));
+        exit_value = my_cd(env, cut_string(buffer, "cd"));
     else
         exit_value = exec_command(*env, buffer);
     return exit_value;
 }
 
+int should_exit(char **env, char *buffer, int *exit_value) {
+    if (find(buffer, "exit") == 0) {
+        if (!is_nbr(cut_string(buffer, "exit"))) {
+            my_putstr(2, EXIT_ERR);
+            *exit_value = 1;
+            free(buffer);
+            return 1;
+        } else {
+            *exit_value = my_exit(env, buffer, cut_string(buffer, "exit"), *exit_value);
+            return (0);
+        }
+    }
+    return 1;
+}
+
 int shell(const char * const *e) {
     char **env = copy_env(e);
     char *buffer;
-    size_t exit_value = 0;
+    int exit_value = 0;
 
     while (display_prompt(env) && (buffer = get_next_line(0))) {
         if (buffer[0] == '\0') {
@@ -50,15 +65,8 @@ int shell(const char * const *e) {
             continue;
         }
         buffer = epur_str(buffer);
-        if (find(buffer, "exit") == 0) {
-            if (!is_nbr(cut_string(buffer, "exit"))) {
-                my_putstr(2, EXIT_ERR);
-                exit_value = 1;
-                free(buffer);
-                continue;
-            } else
-                return (my_exit(env, buffer, cut_string(buffer, "exit"), exit_value));
-        }
+        if (should_exit(env, buffer, &exit_value) == 0)
+            return (exit_value);
         exit_value = interpretor(&env, buffer);
         free(buffer);
     }
