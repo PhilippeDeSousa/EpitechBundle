@@ -20,28 +20,6 @@ static int check_rights(const char *command) {
     return 0;
 }
 
-int exec_everywhere(char **env, char **av, const char *command) {
-    char **paths = get_all_paths(env);
-    char *full_command;
-
-    if (paths == NULL)
-        return (-1);
-    if (execve(command, av, env) != - 1) {
-        free_array(paths);
-        return (0);
-    }
-    for (size_t i = 0; paths[i]; i++) {
-        full_command = my_strcat(paths[i], command);
-        if (execve(full_command, av, env) != - 1) {
-            free_array(paths);
-            return (0);
-        }
-        free(full_command);
-    }
-    free_array(paths);
-    return (-1);
-}
-
 static int print_sig(const int status) {
     switch (WTERMSIG(status)) {
         case SIGSEGV:
@@ -65,12 +43,33 @@ static int print_sig(const int status) {
     return (0);
 }
 
-static int exec(char **env, const char *command) {
+int exec_everywhere(t_shell *shell, char **av, const char *command) {
+    char **paths = shell->paths;
+    char *full_command;
+
+    if (paths == NULL)
+        return (-1);
+    if (execve(command, av, shell->env) != - 1) {
+        return (0);
+    }
+    for (size_t i = 0; paths[i]; i++) {
+        full_command = my_strcat(paths[i], command);
+        if (execve(full_command, av, shell->env) != - 1) {
+            free_array(paths);
+            return (0);
+        }
+        free(full_command);
+    }
+    free_array(paths);
+    return (-1);
+}
+
+static int exec(t_shell *shell, const char *command) {
     char **args;
     int ex_val = 0;
 
     args = str_to_array(command, ' ');
-    if ((ex_val = exec_everywhere(env, args, args[0])) == -1) {
+    if ((ex_val = exec_everywhere(shell, args, args[0])) == -1) {
         if (!check_rights(command))
             my_puterr(2, command, (errno == ENOEXEC) ? BIN_ERROR : CMD_NOT_FOUND);
         free_array(args);
@@ -79,7 +78,7 @@ static int exec(char **env, const char *command) {
     exit(0);
 }
 
-int exec_command(char **env, const char *command) {
+int exec_command(t_shell *shell, const char *command) {
     pid_t pid;
     int status;
 
@@ -87,7 +86,7 @@ int exec_command(char **env, const char *command) {
         my_putstr(2, "Fork failed.\n");
         return (-1);
     } else if (pid == 0) {
-        exec(env, command);
+        exec(shell, command);
     } else {
         waitpid(pid, &status, 0);
         if (WIFSIGNALED(status))

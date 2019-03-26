@@ -23,23 +23,7 @@ static int display_prompt(char **env) {
     return (1);
 }
 
-static int interpretor(char ***env, char *buffer) {
-    size_t exit_value = 0;
-
-    if (my_strcmp(buffer, "env") == 0)
-        print_array(*env);
-    else if (find(buffer, "setenv ") == 0)
-        my_setenv(env, cut_string(buffer, "setenv "));
-    else if (find(buffer, "unsetenv ") == 0)
-        my_unsetenv(env, cut_string(buffer, "unsetenv "));
-    else if (find(buffer, "cd") == 0)
-        exit_value = my_cd(env, cut_string(buffer, "cd"));
-    else
-        exit_value = exec_command(*env, buffer);
-    return exit_value;
-}
-
-int should_exit(char **env, char *buffer, int *exit_value) {
+static int should_exit(char **env, char *buffer, int *exit_value) {
     if (find(buffer, "exit") == 0) {
         if (!is_nbr(cut_string(buffer, "exit"))) {
             my_putstr(2, EXIT_ERR);
@@ -54,10 +38,31 @@ int should_exit(char **env, char *buffer, int *exit_value) {
     return 1;
 }
 
+static int interpretor(char ***env, char *buffer, int *sd_exit) {
+    int exit_value = 0;
+
+    if (should_exit(*env, buffer, &exit_value) == 0) {
+        *sd_exit = 1;
+        return (exit_value);
+    }
+    if (my_strcmp(buffer, "env") == 0)
+        print_array(*env);
+    else if (find(buffer, "setenv ") == 0)
+        my_setenv(env, cut_string(buffer, "setenv "));
+    else if (find(buffer, "unsetenv ") == 0)
+        my_unsetenv(env, cut_string(buffer, "unsetenv "));
+    else if (find(buffer, "cd") == 0)
+        exit_value = my_cd(env, cut_string(buffer, "cd"));
+    else
+        exit_value = exec_command(*env, buffer);
+    return exit_value;
+}
+
 int shell(const char * const *e) {
     char **env = copy_env(e);
     char *buffer;
     int exit_value = 0;
+    int sd_exit = 0;
 
     while (display_prompt(env) && (buffer = get_next_line(0))) {
         if (buffer[0] == '\0') {
@@ -65,9 +70,9 @@ int shell(const char * const *e) {
             continue;
         }
         buffer = epur_str(buffer);
-        if (should_exit(env, buffer, &exit_value) == 0)
+        exit_value = interpretor(&env, buffer, &sd_exit);
+        if (sd_exit == 1)
             return (exit_value);
-        exit_value = interpretor(&env, buffer);
         free(buffer);
     }
     return (my_exit(env, buffer, NULL, exit_value));
