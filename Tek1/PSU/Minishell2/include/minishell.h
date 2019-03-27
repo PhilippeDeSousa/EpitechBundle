@@ -8,6 +8,9 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#define FLAG (1)
+#define COMMAND (2)
+
 #define CMD_NOT_FOUND ": Command not found.\n"
 #define BIN_ERROR "Exec format error. Binary file not executable.\n"
 #define PERM_DENIED ": Permission denied.\n"
@@ -22,13 +25,25 @@
 #define	BUS	"Bus error (core dumped)\n"
 #define	FPE	"Floating exception\n"
 
+typedef struct  s_command {
+    int         type;
+    char        *content;
+}               t_command;
+
 typedef struct  s_shell {
     char        **env;
     char        **paths;
-    char        **commands;
+    t_command   **command;
     int         exit_value;
     int         should_exit;
 }               t_shell;
+
+typedef struct			s_flag
+{
+  char				*code;
+  int				(*fc)(t_shell *);
+}				        t_flag;
+
         /* shell.c */
 
 int shell(const char * const *);
@@ -45,6 +60,7 @@ int find(const char *, const char *);
 int convertnb(const char *);
 int is_nbr(const char *);
 
+
 size_t my_strlen(const char *);
 
 char *my_strdup(const char *);
@@ -56,6 +72,7 @@ char *my_strcat(const char*, const char*);
 char *form_directory(const char *, const char *);
 
 char **str_to_array(const char *, char);
+
         /* builtins */
 
 int my_setenv(char ***, char *);
@@ -69,11 +86,12 @@ char *return_home(char **);
         /* src */
 
 int exec_command(t_shell *, const char *);
+int right_chevron(t_shell *);
 
 void interpretor(t_shell *, char *);
 char **parse_env(const char *, char);
 char **get_all_paths(char **);
-char **parse_input(const char *);
+t_command **parse_input(const char *);
 
 
 #endif /* MINISHELL_H */

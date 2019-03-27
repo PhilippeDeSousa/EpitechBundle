@@ -10,7 +10,11 @@ int my_strcmp(const char *s1, const char *s2) {
     return (0);
 }
 
+// There is still a problem here with something like cda
+
 int find(const char *src, const char *f) {
+    if (my_strlen(f) > my_strlen(src))
+        return (-1);
     for (int i = 0; src[i] && f[i]; i++) {
         if (src[i] != f[i])
             return (f[i] - src[i]);

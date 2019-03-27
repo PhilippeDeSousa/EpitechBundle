@@ -18,6 +18,7 @@ SRCS		=	main.c						\
 				$(SRCS_DIR)parse_env.c		\
 				$(SRCS_DIR)parse_input.c	\
 				$(SRCS_DIR)interpretor.c	\
+				$(SRCS_DIR)flags_handler.c	\
 				$(BUILT_DIR)setenv.c		\
 				$(BUILT_DIR)cd.c			\
 				$(BUILT_DIR)unsetenv.c		\
@@ -35,7 +36,7 @@ SRCS		=	main.c						\
 
 OBJS		= 	$(SRCS:.c=.o)
 
-CFLAGS		+= 	-I./include -g3 -Wall -Wextra
+CFLAGS		+= 	-I./include -g3 -Wall -Wextra -pedantic
 
 all		:	$(NAME)
 

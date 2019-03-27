@@ -18,18 +18,30 @@ static char **command_launcher(t_shell *shell, char *buffer) {
     return shell->env;
 }
 
-static void free_buffer_and_commands(char *buffer, char **commands) {
+static void free_buffer_and_commands(char *buffer, t_command **commands) {
     free(buffer);
-    free_array(commands);
+    for (int i = 0; commands[i]; i++) {
+        for (int c = 0; commands[i][c].content; c++)
+            free(commands[i][c].content);
+        free(commands[i]);
+    }
+    free(commands);
 }
 
 void interpretor(t_shell *shell, char *buffer) {
-    shell->commands = parse_input(buffer);
-    for (int i = 0; shell->commands[i]; i++) {
-        shell->env = command_launcher(shell, shell->commands[i]);
-        if (shell->should_exit == 1) {
-            return free_buffer_and_commands(buffer, shell->commands);
+    shell->command = parse_input(buffer);
+    for (int i = 0; shell->command[i]; i++) {
+        for (int c = 0; shell->command[i][c].content; c++) {
+            if (shell->command[i][c].type == COMMAND) {
+                shell->env = command_launcher(shell, shell->command[i][c].content);
+                if (shell->should_exit == 1) {
+                    free_buffer_and_commands(buffer, shell->command);
+                    return;
+                }
+            }
+            if (shell->command[i][c].type == FLAG)
+                printf("Flags are not handled yet, but I found a %s\n", shell->command[i][c].content);
         }
     }
-    free_buffer_and_commands(buffer, shell->commands);
+    free_buffer_and_commands(buffer, shell->command);
 }
