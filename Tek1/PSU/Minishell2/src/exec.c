@@ -2,6 +2,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <errno.h>
+#include <string.h>
 #include "sys/types.h"
 #include "sys/stat.h"
 
@@ -49,7 +50,10 @@ int exec_everywhere(t_shell *shell, char **av, const char *command) {
 
     if (paths == NULL)
         return (-1);
-    if (execve(command, av, shell->env) != - 1) {
+    if (execve(command, av, shell->env) != - 1)
+        return (0);
+    if (errno == ENOEXEC) {
+        my_puterr(2, command, BIN_ERROR);
         return (0);
     }
     for (size_t i = 0; paths[i]; i++) {
@@ -70,8 +74,9 @@ static int exec(t_shell *shell, const char *command) {
 
     args = str_to_array(command, ' ');
     if ((ex_val = exec_everywhere(shell, args, args[0])) == -1) {
-        if (!check_rights(command))
-            my_puterr(2, command, (errno == ENOEXEC) ? BIN_ERROR : CMD_NOT_FOUND);
+        if (!check_rights(command)) {
+            my_puterr(2, command, CMD_NOT_FOUND);
+        }
         free_array(args);
         exit(1);
     }

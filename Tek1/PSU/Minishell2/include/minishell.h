@@ -12,7 +12,7 @@
 #define COMMAND (2)
 
 #define CMD_NOT_FOUND ": Command not found.\n"
-#define BIN_ERROR "Exec format error. Binary file not executable.\n"
+#define BIN_ERROR ": Exec format error. Binary file not executable.\n"
 #define PERM_DENIED ": Permission denied.\n"
 #define EXIT_ERR "exit: Expression Syntax.\n"
 #define NOT_DIR ": Not a directory.\n"
@@ -22,8 +22,8 @@
 #define SEGV "Segmentation fault (core dumped)\n"
 #define QUIT "Quit (core dumped)\n"
 #define	ABRT "Abort (core dumped)\n"
-#define	BUS	"Bus error (core dumped)\n"
-#define	FPE	"Floating exception\n"
+#define	BUS "Bus error (core dumped)\n"
+#define	FPE "Floating exception\n"
 
 typedef struct  s_command {
     int         type;
