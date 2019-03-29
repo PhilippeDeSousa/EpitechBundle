@@ -19,11 +19,14 @@ SRCS		=	main.c						\
 				$(SRCS_DIR)parse_input.c	\
 				$(SRCS_DIR)interpretor.c	\
 				$(SRCS_DIR)flags_handler.c	\
+				$(SRCS_DIR)tree.c			\
+				$(SRCS_DIR)set_commands.c	\
 				$(BUILT_DIR)setenv.c		\
 				$(BUILT_DIR)cd.c			\
 				$(BUILT_DIR)unsetenv.c		\
 				$(BUILT_DIR)exit.c			\
 				$(LIB_DIR)strcmp.c			\
+				$(LIB_DIR)arr_len.c			\
 				$(LIB_DIR)str_to_array.c	\
 				$(LIB_DIR)print_array.c		\
 				$(LIB_DIR)strdup.c			\

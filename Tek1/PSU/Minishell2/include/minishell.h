@@ -25,15 +25,23 @@
 #define	BUS "Bus error (core dumped)\n"
 #define	FPE "Floating exception\n"
 
+typedef struct s_tree {
+    char        *command;
+    struct s_tree *left;
+    struct s_tree *right;
+
+}           t_tree;
+
 typedef struct  s_command {
     int         type;
     char        *content;
 }               t_command;
 
 typedef struct  s_shell {
+    char        ***free_commands;
     char        **env;
     char        **paths;
-    t_command   **command;
+    t_tree      *commands;
     int         exit_value;
     int         should_exit;
 }               t_shell;
@@ -60,7 +68,7 @@ int find(const char *, const char *);
 int convertnb(const char *);
 int is_nbr(const char *);
 
-
+size_t arr_len(char **);
 size_t my_strlen(const char *);
 
 char *my_strdup(const char *);
@@ -91,7 +99,12 @@ int right_chevron(t_shell *);
 void interpretor(t_shell *, char *);
 char **parse_env(const char *, char);
 char **get_all_paths(char **);
-t_command **parse_input(const char *);
+char **set_commands(const char *);
+
+void parse_input(t_shell *, const char *);
+
+void print_tree(t_tree *);
+void create_tree(char **, t_tree *);
 
 
 #endif /* MINISHELL_H */
