@@ -10,6 +10,8 @@ LIB_DIR 	=	./lib/
 
 BUILT_DIR 	=	./builtin/
 
+FLAG_DIR	=	./flags/
+
 SRCS		=	main.c						\
 				$(SRCS_DIR)get_next_line.c 	\
 				$(SRCS_DIR)shell.c			\
@@ -21,6 +23,11 @@ SRCS		=	main.c						\
 				$(SRCS_DIR)flags_handler.c	\
 				$(SRCS_DIR)tree.c			\
 				$(SRCS_DIR)set_commands.c	\
+				$(FLAG_DIR)double_inf.c		\
+				$(FLAG_DIR)double_sup.c		\
+				$(FLAG_DIR)simple_inf.c		\
+				$(FLAG_DIR)simple_pipe.c	\
+				$(FLAG_DIR)simple_sup.c		\
 				$(BUILT_DIR)setenv.c		\
 				$(BUILT_DIR)cd.c			\
 				$(BUILT_DIR)unsetenv.c		\

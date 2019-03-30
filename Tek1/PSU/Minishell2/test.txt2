@@ -1,0 +1,1 @@
+ls -l | cat -e > hihi; echo hello; ls -l > alo

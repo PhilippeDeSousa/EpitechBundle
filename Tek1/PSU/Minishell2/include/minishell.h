@@ -97,14 +97,21 @@ int exec_command(t_shell *, const char *);
 int right_chevron(t_shell *);
 
 void interpretor(t_shell *, char *);
+void parse_tree(t_shell *, t_tree *);
 char **parse_env(const char *, char);
 char **get_all_paths(char **);
 char **set_commands(const char *);
+char **command_launcher(t_shell *, char *);
 
 void parse_input(t_shell *, const char *);
 
 void print_tree(t_tree *);
 void create_tree(char **, t_tree *);
+
+        /* flags */
+
+int handle_sup(t_shell *, char *, char *, t_tree *);
+int handle_pipe(t_shell *, char *, char *);
 
 
 #endif /* MINISHELL_H */

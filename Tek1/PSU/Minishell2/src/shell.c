@@ -35,7 +35,8 @@ int shell(const char * const *e) {
     char *buffer;
 
     init_shell(&shell, e);
-    while (display_prompt(shell.env) && (buffer = get_next_line(0))) {
+    (isatty(0)) ? display_prompt(shell.env) : 0;
+    while ((buffer = get_next_line(0))) {
         if (buffer[0] == '\0') {
             free(buffer);
             continue;
@@ -43,6 +44,7 @@ int shell(const char * const *e) {
         interpretor(&shell, epur_str(buffer));
         if (shell.should_exit == 1)
             return (shell.exit_value);
+        (isatty(0)) ? display_prompt(shell.env) : 0;
     }
     return (my_exit(&shell, NULL));
 }
